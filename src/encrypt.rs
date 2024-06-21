@@ -2,7 +2,7 @@ use anyhow::Result;
 use magic_crypt::{new_magic_crypt, MagicCryptTrait};
 use std::fs;
 
-fn read_key(path: &str) -> String {
+pub fn read_key(path: &str) -> String {
     fs::read_to_string(path).expect("Unable to read key file")
 }
 
@@ -18,7 +18,6 @@ pub fn decrypt(key: &str, content: &Vec<u8>) -> Result<Vec<u8>> {
 
 #[cfg(test)]
 mod tests {
-    // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
 
     #[test]

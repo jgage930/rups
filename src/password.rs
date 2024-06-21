@@ -1,4 +1,7 @@
-use crate::database::DbBase;
+use crate::{
+    database::DbBase,
+    encrypt::{decrypt, encrypt, read_key},
+};
 use anyhow::{Context, Result};
 use inquire::Text;
 use rusqlite::Connection;
@@ -10,10 +13,22 @@ pub struct Password {
     password: Vec<u8>,
 }
 
+impl Password {
+    fn encrypt(&mut self) {
+        let key = read_key("key");
+        self.password = encrypt(&key, &self.password);
+    }
+
+    fn decrypt(&mut self) {
+        let key = read_key("key");
+        self.password = decrypt(&key, &self.password).expect("Failed to decrypt password.");
+    }
+}
+
 impl DbBase for Password {
     fn create_table(conn: &Connection) -> Result<()> {
         let query = "
-            CREATE TABLE passwords (
+            CREATE TABLE IF NOT EXISTS passwords (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 site TEXT NOT NULL,
@@ -27,7 +42,9 @@ impl DbBase for Password {
         Ok(())
     }
 
-    fn insert(&self, conn: &Connection) -> Result<i64> {
+    fn insert(&mut self, conn: &Connection) -> Result<i64> {
+        self.encrypt();
+
         conn.execute(
             "
                 INSERT INTO passwords
