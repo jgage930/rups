@@ -8,4 +8,5 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.86"
 clap = { version = "4.5.7", features = ["derive"] }
+inquire = "0.7.5"
 magic-crypt = "3.1.13"

@@ -1,5 +1,14 @@
 pub mod args;
 
+use args::Args;
+use clap::Parser;
+
 fn main() {
-    println!("Hello, world!");
+    let args = Args::parse();
+
+    match args {
+        Args::Add => {
+            println!("Got add")
+        }
+    }
 }
