@@ -4,9 +4,12 @@ pub mod password;
 
 use args::Args;
 use clap::Parser;
+use database::connect;
 use password::prompt_for_password;
 
 fn main() {
+    let db = connect();
+
     let args = Args::parse();
 
     match args {
