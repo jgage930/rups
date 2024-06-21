@@ -1,9 +1,10 @@
 pub mod args;
-pub mod models;
+pub mod database;
+pub mod password;
 
 use args::Args;
 use clap::Parser;
-use models::prompt_for_password;
+use password::prompt_for_password;
 
 fn main() {
     let args = Args::parse();
