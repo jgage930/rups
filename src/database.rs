@@ -9,6 +9,11 @@ pub trait DbBase {
 
     // Insert a new row into db.
     fn insert(&mut self, conn: &Connection) -> Result<i64>;
+
+    /// Get a single row by id
+    fn get_by_id(id: i64, conn: &Connection) -> Option<Self>
+    where
+        Self: Sized;
 }
 
 pub fn connect() -> Connection {
