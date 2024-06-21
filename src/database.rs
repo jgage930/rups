@@ -7,9 +7,7 @@ pub trait DbBase {
     fn create_table(conn: &Connection) -> Result<()>;
 
     // Insert a new row into db.
-    fn insert(&self, conn: &Connection) -> Result<Self>
-    where
-        Self: Sized;
+    fn insert(&self, conn: &Connection) -> Result<i64>
 }
 
 pub fn connect() -> Connection {
