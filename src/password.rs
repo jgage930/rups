@@ -35,8 +35,8 @@ impl DbBase for Password {
                 VALUES (?1, ?2, ?3)
             
             ",
-            (self.name, self.site, self.password),
-        );
+            (&self.name, &self.site, &self.password),
+        )?;
 
         let id = conn.last_insert_rowid();
         Ok(id)

@@ -1,3 +1,4 @@
+use crate::password::Password;
 use anyhow::Result;
 use rusqlite::Connection;
 
@@ -7,9 +8,17 @@ pub trait DbBase {
     fn create_table(conn: &Connection) -> Result<()>;
 
     // Insert a new row into db.
-    fn insert(&self, conn: &Connection) -> Result<i64>
+    fn insert(&self, conn: &Connection) -> Result<i64>;
 }
 
 pub fn connect() -> Connection {
     Connection::open("data.db").expect("Could not connect to the database.")
+}
+
+pub fn setup_db() -> Result<Connection> {
+    let conn = connect();
+
+    Password::create_table(&conn)?;
+
+    Ok(conn)
 }
