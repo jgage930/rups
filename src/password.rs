@@ -4,7 +4,7 @@ use crate::{
 };
 use anyhow::{Context, Result};
 use inquire::Text;
-use rusqlite::Connection;
+use rusqlite::{params, Connection};
 
 #[derive(Debug)]
 pub struct Password {
@@ -46,7 +46,7 @@ impl DbBase for Password {
         self.encrypt();
 
         conn.execute(
-            "
+            "   
                 INSERT INTO passwords
                 (name, site, password)
                 VALUES (?1, ?2, ?3)
@@ -57,6 +57,20 @@ impl DbBase for Password {
 
         let id = conn.last_insert_rowid();
         Ok(id)
+    }
+
+    fn get_by_id(id: i64, conn: &Connection) -> Result<Option<Self>> {
+        let mut query = conn.prepare("SELECT * FROM passwords WHERE id = ?1")?;
+
+        let row = query.query_row(params![id], |row| {
+            Ok(Self {
+                name: row.get(1)?,
+                site: row.get(2)?,
+                password: row.get(3)?,
+            })
+        })?;
+
+        Ok(Some(row))
     }
 }
 

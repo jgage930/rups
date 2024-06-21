@@ -11,7 +11,7 @@ pub trait DbBase {
     fn insert(&mut self, conn: &Connection) -> Result<i64>;
 
     /// Get a single row by id
-    fn get_by_id(id: i64, conn: &Connection) -> Option<Self>
+    fn get_by_id(id: i64, conn: &Connection) -> Result<Option<Self>>
     where
         Self: Sized;
 }
