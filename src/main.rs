@@ -24,6 +24,9 @@ fn main() -> Result<()> {
 
             println!("Inserted password {id}");
         }
+        Args::Get { id } => {
+            println!("{id}");
+        }
     }
 
     Ok(())
