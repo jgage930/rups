@@ -8,6 +8,7 @@ use args::Args;
 use clap::Parser;
 use database::{setup_db, DbBase};
 use password::{prompt_for_password, Password};
+use tabled::Table;
 
 fn main() -> Result<()> {
     let db = setup_db().expect("Failed to set up database.");
@@ -15,8 +16,7 @@ fn main() -> Result<()> {
 
     match args {
         Args::Add => {
-            let mut password =
-                prompt_for_password().expect("Could not read input from command line.");
+            let password = prompt_for_password().expect("Could not read input from command line.");
 
             let id = password
                 .insert(&db)
@@ -26,6 +26,9 @@ fn main() -> Result<()> {
         }
         Args::Get { id } => {
             let password = Password::get_by_id(id, &db)?;
+
+            let table = Table::new(password).to_string();
+            println!("{table}")
         }
     }
 
