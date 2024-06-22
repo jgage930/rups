@@ -3,13 +3,13 @@
 A password safe written in rust.
 
 ### TODO
--  set up arguments in clap
+- set up arguments in clap
 
--  create a password
+
+~~- create a password
     - accept command line arguments
     - encrypt password, store in db
-    - DONE
-
+    - DONE ~~
 
 - config
     - set up a config file to hold vars
@@ -18,8 +18,8 @@ A password safe written in rust.
         - master user?
 
 - crud operations
-    - get single password by id
-    - list all passwords
+    ~~ - get single password by id DONE ~~
+    - list all passwords DONE
     - search for a password
         - auto complete set up for passwords in db
     - update password
