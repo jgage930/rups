@@ -31,7 +31,10 @@ fn main() -> Result<()> {
             println!("{table}")
         }
         Args::List => {
-            println!("not implementes")
+            let passwords = Password::list(&db)?;
+
+            let table = Table::new(passwords).to_string();
+            println!("{table}")
         }
     }
 

@@ -14,6 +14,11 @@ pub trait DbBase {
     fn get_by_id(id: i64, conn: &Connection) -> Result<Option<Self>>
     where
         Self: Sized;
+
+    /// List all items in table.
+    fn list(conn: &Connection) -> Result<Vec<Self>>
+    where
+        Self: Sized;
 }
 
 pub fn connect() -> Connection {

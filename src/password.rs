@@ -63,6 +63,21 @@ impl DbBase for Password {
 
         Ok(Some(row))
     }
+
+    fn list(conn: &Connection) -> Result<Vec<Self>> {
+        let mut query = conn.prepare("SELECT * FROM passwords")?;
+
+        let rows = query.query_map([], |row| {
+            Ok(Self {
+                name: row.get(1)?,
+                site: row.get(2)?,
+                password: row.get(3)?,
+            })
+        })?;
+
+        let passwords: Vec<Password> = rows.map(|row| row.unwrap()).collect();
+        Ok(passwords)
+    }
 }
 
 impl Tabled for Password {
