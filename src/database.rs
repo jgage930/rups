@@ -8,7 +8,7 @@ pub trait DbBase {
     fn create_table(conn: &Connection) -> Result<()>;
 
     // Insert a new row into db.
-    fn insert(&mut self, conn: &Connection) -> Result<i64>;
+    fn insert(&self, conn: &Connection) -> Result<i64>;
 
     /// Get a single row by id
     fn get_by_id(id: i64, conn: &Connection) -> Result<Option<Self>>

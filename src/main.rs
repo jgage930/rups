@@ -7,7 +7,7 @@ use anyhow::{Context, Result};
 use args::Args;
 use clap::Parser;
 use database::{setup_db, DbBase};
-use password::prompt_for_password;
+use password::{prompt_for_password, Password};
 
 fn main() -> Result<()> {
     let db = setup_db().expect("Failed to set up database.");
@@ -25,7 +25,7 @@ fn main() -> Result<()> {
             println!("Inserted password {id}");
         }
         Args::Get { id } => {
-            println!("{id}");
+            let password = Password::get_by_id(id, &db)?;
         }
     }
 

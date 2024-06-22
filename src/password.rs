@@ -5,24 +5,14 @@ use crate::{
 use anyhow::{Context, Result};
 use inquire::Text;
 use rusqlite::{params, Connection};
+use std::borrow::Cow;
+use tabled::Tabled;
 
 #[derive(Debug)]
 pub struct Password {
     name: String,
     site: String,
     password: Vec<u8>,
-}
-
-impl Password {
-    fn encrypt(&mut self) {
-        let key = read_key("key");
-        self.password = encrypt(&key, &self.password);
-    }
-
-    fn decrypt(&mut self) {
-        let key = read_key("key");
-        self.password = decrypt(&key, &self.password).expect("Failed to decrypt password.");
-    }
 }
 
 impl DbBase for Password {
@@ -42,8 +32,9 @@ impl DbBase for Password {
         Ok(())
     }
 
-    fn insert(&mut self, conn: &Connection) -> Result<i64> {
-        self.encrypt();
+    fn insert(&self, conn: &Connection) -> Result<i64> {
+        let key = read_key("key");
+        let encrypted_password = encrypt(&key, &self.password);
 
         conn.execute(
             "   
@@ -52,7 +43,7 @@ impl DbBase for Password {
                 VALUES (?1, ?2, ?3)
             
             ",
-            (&self.name, &self.site, &self.password),
+            (&self.name, &self.site, &encrypted_password),
         )?;
 
         let id = conn.last_insert_rowid();
@@ -71,6 +62,35 @@ impl DbBase for Password {
         })?;
 
         Ok(Some(row))
+    }
+}
+
+impl Tabled for Password {
+    const LENGTH: usize = 3;
+
+    fn fields(&self) -> Vec<Cow<'_, str>> {
+        let key = read_key("key");
+        let unencrypted_password =
+            decrypt(&key, &self.password).expect("Failed to decrypt password from safe.");
+
+        let password = String::from_utf8(unencrypted_password)
+            .expect("Could not encode password to utf-8.")
+            .to_owned();
+
+        let mut values = Vec::new();
+        values.push(Cow::from(&self.name));
+        values.push(Cow::from(&self.site));
+        values.push(Cow::Owned(password));
+
+        values
+    }
+
+    fn headers() -> Vec<std::borrow::Cow<'static, str>> {
+        vec![
+            Cow::Borrowed("Name"),
+            Cow::Borrowed("Site"),
+            Cow::Borrowed("Password"),
+        ]
     }
 }
 
