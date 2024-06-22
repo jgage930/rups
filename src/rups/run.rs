@@ -1,6 +1,14 @@
-pub mod rups;
+use anyhow::{Context, Result};
+use clap::Parser;
+use tabled::Table;
 
-fn main() -> Result<()> {
+use super::{
+    args::Args,
+    database::{setup_db, DbBase},
+    password::{prompt_for_password, Password},
+};
+
+pub fn run() -> Result<()> {
     let db = setup_db().expect("Failed to set up database.");
     let args = Args::parse();
 
