@@ -3,7 +3,7 @@ use super::{
     encrypt::{decrypt, encrypt, read_key},
 };
 use anyhow::{Context, Result};
-use inquire::Text;
+use inquire::{Autocomplete, Text};
 use rusqlite::{params, Connection};
 use std::borrow::Cow;
 use tabled::Tabled;
@@ -119,4 +119,27 @@ pub fn prompt_for_password() -> Result<Password> {
         site,
         password,
     })
+}
+
+#[derive(Clone)]
+pub struct PasswordCompleter<'a> {
+    db: &'a Connection,
+}
+
+impl<'a> Autocomplete for PasswordCompleter<'a> {
+    fn get_completion(
+        &mut self,
+        input: &str,
+        highlighted_suggestion: Option<String>,
+    ) -> std::prelude::v1::Result<inquire::autocompletion::Replacement, inquire::CustomUserError>
+    {
+        todo!();
+    }
+
+    fn get_suggestions(
+        &mut self,
+        input: &str,
+    ) -> std::prelude::v1::Result<Vec<String>, inquire::CustomUserError> {
+        todo!()
+    }
 }
