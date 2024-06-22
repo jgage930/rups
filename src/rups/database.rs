@@ -1,4 +1,4 @@
-use crate::password::Password;
+use super::password::Password;
 use anyhow::Result;
 use rusqlite::Connection;
 
