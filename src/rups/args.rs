@@ -15,4 +15,7 @@ pub enum Args {
 
     #[command(version, about = "List all passwords in the safe.")]
     List,
+
+    #[command(version, about = "Search for a password by name.")]
+    Search,
 }

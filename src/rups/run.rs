@@ -34,6 +34,9 @@ pub fn run() -> Result<()> {
             let table = Table::new(passwords).to_string();
             println!("{table}")
         }
+        Args::Search => {
+            print!("not yet implemented.")
+        }
     }
 
     Ok(())
