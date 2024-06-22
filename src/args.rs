@@ -12,4 +12,7 @@ pub enum Args {
         #[arg(short = 'i', long = "id")]
         id: i64,
     },
+
+    #[command(version, about = "List all passwords in the safe.")]
+    List,
 }

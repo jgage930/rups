@@ -30,6 +30,9 @@ fn main() -> Result<()> {
             let table = Table::new(password).to_string();
             println!("{table}")
         }
+        Args::List => {
+            println!("not implementes")
+        }
     }
 
     Ok(())
