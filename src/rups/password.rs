@@ -5,7 +5,7 @@ use super::{
 use anyhow::{Context, Result};
 use inquire::{Autocomplete, Text};
 use rusqlite::{params, Connection};
-use std::borrow::Cow;
+use std::{borrow::Cow, fmt::format};
 use tabled::Tabled;
 
 #[derive(Debug)]
@@ -140,6 +140,18 @@ impl<'a> Autocomplete for PasswordCompleter<'a> {
         &mut self,
         input: &str,
     ) -> std::prelude::v1::Result<Vec<String>, inquire::CustomUserError> {
-        todo!()
+        let mut query = self
+            .db
+            .prepare("SELECT name FROM passwords WHERE name LIKE ?1")?;
+
+        let pattern = format!("{input}%");
+        let rows = query.query_map(params![pattern], |row| Ok(row.get(0)?))?;
+
+        let mut suggestions = Vec::new();
+        for row in rows {
+            suggestions.push(row?);
+        }
+
+        Ok(suggestions)
     }
 }
