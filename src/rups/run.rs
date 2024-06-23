@@ -1,11 +1,12 @@
 use anyhow::{Context, Result};
 use clap::Parser;
+use inquire::Text;
 use tabled::Table;
 
 use super::{
     args::Args,
     database::{setup_db, DbBase},
-    password::{prompt_for_password, Password},
+    password::{prompt_for_password, Password, PasswordCompleter},
 };
 
 pub fn run() -> Result<()> {
@@ -35,7 +36,11 @@ pub fn run() -> Result<()> {
             println!("{table}")
         }
         Args::Search => {
-            print!("not yet implemented.")
+            let completer = PasswordCompleter::new(db.into());
+
+            let search_val = Text::new("Enter Name: ")
+                .with_autocomplete(completer)
+                .prompt()?;
         }
     }
 
