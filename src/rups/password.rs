@@ -5,7 +5,7 @@ use super::{
 use anyhow::{Context, Result};
 use inquire::{Autocomplete, Text};
 use rusqlite::{params, Connection};
-use std::{borrow::Cow, fmt::format};
+use std::{borrow::Cow, rc::Rc};
 use tabled::Tabled;
 
 #[derive(Debug)]
@@ -122,11 +122,17 @@ pub fn prompt_for_password() -> Result<Password> {
 }
 
 #[derive(Clone)]
-pub struct PasswordCompleter<'a> {
-    db: &'a Connection,
+pub struct PasswordCompleter {
+    db: Rc<Connection>,
 }
 
-impl<'a> Autocomplete for PasswordCompleter<'a> {
+impl PasswordCompleter {
+    pub fn new(db: Rc<Connection>) -> Self {
+        Self { db }
+    }
+}
+
+impl Autocomplete for PasswordCompleter {
     fn get_completion(
         &mut self,
         input: &str,
