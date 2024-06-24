@@ -1,5 +1,5 @@
 use super::password::Password;
-use anyhow::Result;
+use anyhow::{Context, Result};
 use rusqlite::Connection;
 
 /// A trait to allow a struct to interact with a database.
@@ -26,12 +26,35 @@ pub struct TableName(&'static str);
 pub struct Column {
     name: String,
     type_: String,
+    nullable: bool,
 }
 
 // This trait defines how a struct should interact with the db.
 pub trait DbModel {
     fn table_name() -> TableName;
     fn columns() -> Vec<Column>;
+
+    fn create_table(db: &Connection) -> Result<()> {
+        let col_sql = Self::columns()
+            .iter()
+            .map(|col| {
+                let null_sql = if col.nullable { "NOT NULL" } else { "" };
+                format!("{} {} {},", col.name, col.type_, null_sql)
+            })
+            .collect::<Vec<String>>()
+            .join("\n");
+
+        let query = format!(
+            "CREATE TABLE IF NOT EXISTS {} ({})",
+            Self::table_name().0,
+            col_sql
+        );
+
+        db.execute(&query, ())
+            .context("Failed to create the password table")?;
+
+        Ok(())
+    }
 }
 
 pub fn connect() -> Connection {
