@@ -43,7 +43,7 @@ pub fn run() -> Result<()> {
                 .prompt()?;
 
             let new_db = connect();
-            let passwords = Password::get_by_col("name", &search_val, &new_db);
+            let passwords = Password::get_by_col("name", &search_val, &new_db)?;
 
             let table = Table::new(passwords).to_string();
             println!("{table}")

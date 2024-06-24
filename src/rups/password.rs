@@ -83,7 +83,7 @@ impl DbBase for Password {
         let sql = format!("SELECT * FROM passwords WHERE {} = ?1", col);
         let mut query = conn.prepare(&sql)?;
 
-        let rows = query.query_map([], |row| {
+        let rows = query.query_map([value], |row| {
             Ok(Self {
                 name: row.get(1)?,
                 site: row.get(2)?,
