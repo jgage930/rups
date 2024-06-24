@@ -5,7 +5,7 @@ use tabled::Table;
 
 use super::{
     args::Args,
-    database::{setup_db, DbBase},
+    database::{connect, setup_db, DbBase},
     password::{prompt_for_password, Password, PasswordCompleter},
 };
 
@@ -42,7 +42,11 @@ pub fn run() -> Result<()> {
                 .with_autocomplete(completer)
                 .prompt()?;
 
-            println!("{search_val}")
+            let new_db = connect();
+            let passwords = Password::get_by_col("name", &search_val, &new_db);
+
+            let table = Table::new(passwords).to_string();
+            println!("{table}")
         }
     }
 
