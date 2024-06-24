@@ -1,5 +1,5 @@
 use super::password::Password;
-use anyhow::{Context, Result};
+use anyhow::{Result};
 use rusqlite::Connection;
 
 /// A trait to allow a struct to interact with a database.
