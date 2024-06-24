@@ -42,10 +42,7 @@ pub fn run() -> Result<()> {
                 .with_autocomplete(completer)
                 .prompt()?;
 
-            let password = Password::get_by_id(id, &db)?;
-
-            let table = Table::new(password).to_string();
-            println!("{table}")
+            println!("{search_val}")
         }
     }
 

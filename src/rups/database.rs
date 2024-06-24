@@ -21,6 +21,19 @@ pub trait DbBase {
         Self: Sized;
 }
 
+pub struct TableName(&'static str);
+
+pub struct Column {
+    name: String,
+    type_: String,
+}
+
+// This trait defines how a struct should interact with the db.
+pub trait DbModel {
+    fn table_name() -> TableName;
+    fn columns() -> Vec<Column>;
+}
+
 pub fn connect() -> Connection {
     Connection::open("data.db").expect("Could not connect to the database.")
 }
