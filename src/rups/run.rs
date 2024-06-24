@@ -41,6 +41,11 @@ pub fn run() -> Result<()> {
             let search_val = Text::new("Enter Name: ")
                 .with_autocomplete(completer)
                 .prompt()?;
+
+            let password = Password::get_by_id(id, &db)?;
+
+            let table = Table::new(password).to_string();
+            println!("{table}")
         }
     }
 

@@ -139,7 +139,15 @@ impl Autocomplete for PasswordCompleter {
         highlighted_suggestion: Option<String>,
     ) -> std::prelude::v1::Result<inquire::autocompletion::Replacement, inquire::CustomUserError>
     {
-        todo!();
+        match highlighted_suggestion {
+            Some(suggestion) => {
+                let index = input.len();
+                let replacement = format!("{}{}", input, &suggestion[index..]);
+
+                Ok(Some(replacement))
+            }
+            None => Ok(Some(input.to_string())),
+        }
     }
 
     fn get_suggestions(
