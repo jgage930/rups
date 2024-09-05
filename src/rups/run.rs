@@ -2,7 +2,6 @@ use anyhow::{Context, Result};
 use clap::Parser;
 use inquire::Text;
 use rusqlite::Connection;
-use std::rc::Rc;
 use tabled::Table;
 
 use super::{
