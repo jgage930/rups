@@ -1,6 +1,7 @@
 use anyhow::{Context, Result};
 use clap::Parser;
 use inquire::Text;
+use rusqlite::Connection;
 use tabled::Table;
 
 use super::{
@@ -8,6 +9,18 @@ use super::{
     database::{connect, setup_db, DbBase},
     password::{prompt_for_password, Password, PasswordCompleter},
 };
+
+fn add_password(db: &Connection) -> Result<()> {
+    let password = prompt_for_password().expect("Could not read input from command line.");
+
+    let id = password
+        .insert(&db)
+        .context("Failed to insert new password entry")?;
+
+    println!("Inserted password {id}");
+
+    Ok(())
+}
 
 pub fn run() -> Result<()> {
     let db = setup_db().expect("Failed to set up database.");
