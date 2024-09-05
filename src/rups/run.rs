@@ -2,6 +2,7 @@ use anyhow::{Context, Result};
 use clap::Parser;
 use inquire::Text;
 use rusqlite::Connection;
+use std::rc::Rc;
 use tabled::Table;
 
 use super::{
@@ -40,31 +41,30 @@ fn get_password(id: i64, db: &Connection) -> Result<()> {
     Ok(())
 }
 
-fn search_passwords(db: &Connection) -> Result<()> {
-    let completer = PasswordCompleter::new(db.into());
-
-    let search_val = Text::new("Enter Name: ")
-        .with_autocomplete(completer)
-        .prompt()?;
-
-    let new_db = connect();
-    let passwords = Password::get_by_col("name", &search_val, &new_db)?;
-
-    let table = Table::new(passwords).to_string();
-    println!("{table}");
-
-    Ok(())
-}
-
 pub fn run() -> Result<()> {
     let db = setup_db().expect("Failed to set up database.");
     let args = Args::parse();
 
-    match args {
+    let _ = match args {
         Args::Add => add_password(&db),
         Args::Get { id } => get_password(id, &db),
         Args::List => list_passwords(&db),
-        Args::Search => todo!(),
+        Args::Search => {
+            // The borrow checker does not like putting this into a function
+            let completer = PasswordCompleter::new(db.into());
+
+            let search_val = Text::new("Enter Name: ")
+                .with_autocomplete(completer)
+                .prompt()?;
+
+            let new_db = connect();
+            let passwords = Password::get_by_col("name", &search_val, &new_db)?;
+
+            let table = Table::new(passwords).to_string();
+            println!("{table}");
+
+            Ok(())
+        }
     };
 
     Ok(())
